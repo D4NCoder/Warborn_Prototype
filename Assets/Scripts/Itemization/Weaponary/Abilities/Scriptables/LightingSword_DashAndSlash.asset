@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: LightingSword_DashAndSlash
+  m_EditorClassIdentifier: Assembly-CSharp::DashAndSlash
+  Name: Dash & Slash
+  Description: Dash to an oponent and slash them with upper cut for AD Damage
+  Icon: {fileID: 0}
+  LocalPlayerAnimations:
+  - {fileID: -203655887218126122, guid: 0d3376ca747edef488537dfcfb33a9d0, type: 3}
+  - {fileID: -203655887218126122, guid: b12afdc293615b747b4763f601f86ba0, type: 3}
+  EffectsToApply:
+  - {fileID: 11400000, guid: 8d7697041640a6c4ab5348b10b14beb7, type: 2}
+  canUse: 0
+  Cooldown: 10
