@@ -25,7 +25,7 @@ namespace Warborn.Characters.Player
         {
             if (!isLocalPlayer) { return; }
 
-            if (HandleAbilities()) { return; }
+            HandleAbilities();
             HandleMovement();
 
         }
@@ -36,10 +36,9 @@ namespace Warborn.Characters.Player
             return playerMover.TryMove(groundChecker.GetPlayerGrounded);
         }
 
-        private bool HandleAbilities()
+        private void HandleAbilities()
         {
-            return false;
-            //return playerAbilities.TryUseAbility();
+            playerAbilities.UpdatePlayerAbilities();
         }
 
     }

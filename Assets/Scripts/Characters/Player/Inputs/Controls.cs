@@ -45,6 +45,14 @@ namespace Warborn_Prototype.Inputs
                     ""interactions"": """"
                 },
                 {
+                    ""name"": ""BasicAttack"",
+                    ""type"": ""Button"",
+                    ""id"": ""0703e0cd-ff0b-4aa4-bcc0-3a0614dda3ac"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
                     ""name"": ""Ability1"",
                     ""type"": ""Button"",
                     ""id"": ""9610aaeb-2495-474a-aca7-5759f6263af6"",
@@ -179,6 +187,17 @@ namespace Warborn_Prototype.Inputs
                     ""action"": ""Ability3"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c0522191-4b6f-49bc-9421-fe957ab74450"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BasicAttack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -207,6 +226,7 @@ namespace Warborn_Prototype.Inputs
             m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
             m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
             m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
+            m_Player_BasicAttack = m_Player.FindAction("BasicAttack", throwIfNotFound: true);
             m_Player_Ability1 = m_Player.FindAction("Ability1", throwIfNotFound: true);
             m_Player_Ability2 = m_Player.FindAction("Ability2", throwIfNotFound: true);
             m_Player_Ability3 = m_Player.FindAction("Ability3", throwIfNotFound: true);
@@ -262,6 +282,7 @@ namespace Warborn_Prototype.Inputs
         private readonly InputAction m_Player_Look;
         private readonly InputAction m_Player_Move;
         private readonly InputAction m_Player_Jump;
+        private readonly InputAction m_Player_BasicAttack;
         private readonly InputAction m_Player_Ability1;
         private readonly InputAction m_Player_Ability2;
         private readonly InputAction m_Player_Ability3;
@@ -272,6 +293,7 @@ namespace Warborn_Prototype.Inputs
             public InputAction @Look => m_Wrapper.m_Player_Look;
             public InputAction @Move => m_Wrapper.m_Player_Move;
             public InputAction @Jump => m_Wrapper.m_Player_Jump;
+            public InputAction @BasicAttack => m_Wrapper.m_Player_BasicAttack;
             public InputAction @Ability1 => m_Wrapper.m_Player_Ability1;
             public InputAction @Ability2 => m_Wrapper.m_Player_Ability2;
             public InputAction @Ability3 => m_Wrapper.m_Player_Ability3;
@@ -293,6 +315,9 @@ namespace Warborn_Prototype.Inputs
                     @Jump.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
                     @Jump.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
                     @Jump.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
+                    @BasicAttack.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBasicAttack;
+                    @BasicAttack.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBasicAttack;
+                    @BasicAttack.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBasicAttack;
                     @Ability1.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAbility1;
                     @Ability1.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAbility1;
                     @Ability1.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAbility1;
@@ -315,6 +340,9 @@ namespace Warborn_Prototype.Inputs
                     @Jump.started += instance.OnJump;
                     @Jump.performed += instance.OnJump;
                     @Jump.canceled += instance.OnJump;
+                    @BasicAttack.started += instance.OnBasicAttack;
+                    @BasicAttack.performed += instance.OnBasicAttack;
+                    @BasicAttack.canceled += instance.OnBasicAttack;
                     @Ability1.started += instance.OnAbility1;
                     @Ability1.performed += instance.OnAbility1;
                     @Ability1.canceled += instance.OnAbility1;
@@ -342,6 +370,7 @@ namespace Warborn_Prototype.Inputs
             void OnLook(InputAction.CallbackContext context);
             void OnMove(InputAction.CallbackContext context);
             void OnJump(InputAction.CallbackContext context);
+            void OnBasicAttack(InputAction.CallbackContext context);
             void OnAbility1(InputAction.CallbackContext context);
             void OnAbility2(InputAction.CallbackContext context);
             void OnAbility3(InputAction.CallbackContext context);

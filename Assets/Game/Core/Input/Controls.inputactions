@@ -30,6 +30,14 @@
                     "interactions": ""
                 },
                 {
+                    "name": "BasicAttack",
+                    "type": "Button",
+                    "id": "0703e0cd-ff0b-4aa4-bcc0-3a0614dda3ac",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
                     "name": "Ability1",
                     "type": "Button",
                     "id": "9610aaeb-2495-474a-aca7-5759f6263af6",
@@ -162,6 +170,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Ability3",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c0522191-4b6f-49bc-9421-fe957ab74450",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "BasicAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

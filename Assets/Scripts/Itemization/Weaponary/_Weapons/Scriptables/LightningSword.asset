@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d04b9533a4e019c48b8a3fbc1b94b2d9, type: 3}
+  m_Name: LightningSword
+  m_EditorClassIdentifier: 
+  WeaponPrefab: {fileID: 3340591102015448106, guid: b1721399c8938d845b9e1d1f7346c40c, type: 3}
+  Name: 
+  Description: 
+  Icon: {fileID: 0}
+  BasicAttack: {fileID: 11400000, guid: 95869a1906c490a45bd5a8d35f9039ea, type: 2}
+  Ability1: {fileID: 11400000, guid: 3469e981991a8264cb24cb47e96f21f4, type: 2}
+  Ability2: {fileID: 0}
+  UltimateAbility: {fileID: 0}
+  AnAbilityUsed: 1

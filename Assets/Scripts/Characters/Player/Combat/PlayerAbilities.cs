@@ -22,18 +22,74 @@ namespace Warborn.Characters.Player.Combat
 
         private void InitControlsCallbacks()
         {
-            // Controls.Player.Move.performed += ctx => StartMoving(ctx.ReadValue<Vector2>());
-            // Controls.Player.Move.canceled += ctx => CancelMovement();
-            // Controls.Player.Jump.performed += ctx => SetJump();
-            // Controls.Player.Ability1.performed += ctx => UseAbility(PlayerAbilitiesEnum.Ability1);
-            // Controls.Player.Ability1.performed += ctx => UseAbility(PlayerAbilitiesEnum.Ability2);
-            // Controls.Player.Ability1.performed += ctx => UseAbility(PlayerAbilitiesEnum.Ability3);
+            Controls.Player.BasicAttack.performed += ctx => BasicAttack();
+            Controls.Player.Ability1.performed += ctx => Ability1();
+            Controls.Player.Ability2.performed += ctx => Ability2();
+            Controls.Player.Ability3.performed += ctx => UltimateAbility();
         }
+
+        private void BasicAttack() => basicAttackUsed = true;
+
+        private void Ability1() => ability1Used = true;
+        private void Ability2() => ability2Used = true;
+        private void UltimateAbility() => ultimateAbilityUsed = true;
         #endregion
 
+        [Header("References")]
+        [SerializeField] private Weapon equipedWeapon = null;
+        [SerializeField] private GameObject localPlayer = null;
+        [SerializeField] private Transform weaponPlaceholder = null;
+        [Header("Weapon Information")]
         [SerializeField] private bool isUsingAbility = false;
 
+        private bool basicAttackUsed = false;
+        private bool ability1Used = false;
+        private bool ability2Used = false;
+        private bool ultimateAbilityUsed = false;
 
+        private void Start()
+        {
+            InitControlsCallbacks();
+            equipedWeapon.EquipWeapon(weaponPlaceholder);
+        }
+
+        public void UpdatePlayerAbilities()
+        {
+            HandleAbilitiesOnce();
+
+            if (equipedWeapon == null) { return; }
+
+            if (equipedWeapon.AnAbilityUsed)
+            {
+                equipedWeapon.UpdateWeapon();
+            }
+        }
+
+        private void HandleAbilitiesOnce()
+        {
+            if (basicAttackUsed)
+            {
+                equipedWeapon.UseAbility(PlayerAbilityStates.BasicAttack, localPlayer);
+                basicAttackUsed = false;
+            }
+            else if (ability1Used)
+            {
+                equipedWeapon.UseAbility(PlayerAbilityStates.Ability1, localPlayer);
+                ability1Used = false;
+            }
+            else if (ability2Used)
+            {
+                equipedWeapon.UseAbility(PlayerAbilityStates.Ability2, localPlayer);
+                ability2Used = false;
+
+            }
+            else if (ultimateAbilityUsed)
+            {
+                equipedWeapon.UseAbility(PlayerAbilityStates.Ultimate, localPlayer);
+                ultimateAbilityUsed = false;
+
+            }
+        }
     }
 }
 

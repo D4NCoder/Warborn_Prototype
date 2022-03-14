@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 456580a1eb540ba41ba5ed71fa81928c, type: 3}
+  m_Name: LightningSwordBA
+  m_EditorClassIdentifier: 
+  Name: Basic Attack
+  Description: This is merely basic atack
+  Icon: {fileID: 0}
+  PlayerAnimationTriggers:
+  - LightningSword_BA
+  EffectsToApply:
+  - {fileID: 11400000, guid: 8d7697041640a6c4ab5348b10b14beb7, type: 2}
+  canUse: 0
+  Cooldown: 0.5

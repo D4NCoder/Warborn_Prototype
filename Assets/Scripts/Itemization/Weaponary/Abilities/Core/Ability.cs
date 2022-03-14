@@ -19,4 +19,6 @@ public abstract class Ability : ScriptableObject
     public float Cooldown;
 
     public abstract void PerformAbility(GameObject _localPlayer, GameObject _target);
+
+    public abstract void UpdateAbility(GameObject _localPlayer);
 }
