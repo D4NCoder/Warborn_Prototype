@@ -13,7 +13,6 @@ namespace Warborn.Characters.Player.Movement
         [SerializeField] private Animator playerAnimator = null;
         [Header("Initial variables")]
         [SerializeField] private float movementSpeed = 7f;
-        [SerializeField] private float jumpForce = 2.0f;
         [SerializeField] private bool isPlayerMooving = false;
         [SerializeField] private bool hasPlayerJumped = false;
 
@@ -42,7 +41,6 @@ namespace Warborn.Characters.Player.Movement
         {
             Controls.Player.Move.performed += ctx => StartMoving(ctx.ReadValue<Vector2>());
             Controls.Player.Move.canceled += ctx => CancelMovement();
-            Controls.Player.Jump.performed += ctx => SetJump();
         }
         #endregion
 
@@ -58,10 +56,6 @@ namespace Warborn.Characters.Player.Movement
             isPlayerMooving = false;
         }
 
-        private void SetJump()
-        {
-            hasPlayerJumped = true;
-        }
         #endregion
 
         public bool TryMove(bool _isPlayerGrounded)
@@ -74,36 +68,7 @@ namespace Warborn.Characters.Player.Movement
             float _animatorSpeed = _animatorVector.magnitude;
             playerAnimator.SetFloat("forwardSpeed", _animatorSpeed);
 
-            // Jump
-            TryToJump(_isPlayerGrounded);
             return true;
-        }
-
-        private void TryToJump(bool _isPlayerGrounded)
-        {
-            if (shouldCheckForJump)
-            {
-                if (_isPlayerGrounded)
-                {
-                    hasPlayerJumped = false;
-                    shouldCheckForJump = false;
-                    playerAnimator.SetBool("hasJumped", false);
-                    return;
-                }
-            }
-
-            if (_isPlayerGrounded && hasPlayerJumped)
-            {
-                playerBody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-                playerAnimator.SetBool("hasJumped", true);
-                StartCoroutine(WaitForJump());
-            }
-        }
-
-        IEnumerator WaitForJump()
-        {
-            yield return new WaitForSeconds(0.8f);
-            shouldCheckForJump = true;
         }
     }
 }

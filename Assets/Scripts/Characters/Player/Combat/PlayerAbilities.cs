@@ -39,8 +39,6 @@ namespace Warborn.Characters.Player.Combat
         [SerializeField] private Weapon equipedWeapon = null;
         [SerializeField] private GameObject localPlayer = null;
         [SerializeField] private Transform weaponPlaceholder = null;
-        [Header("Weapon Information")]
-        [SerializeField] private bool isUsingAbility = false;
 
         private bool basicAttackUsed = false;
         private bool ability1Used = false;
@@ -53,19 +51,17 @@ namespace Warborn.Characters.Player.Combat
             equipedWeapon.EquipWeapon(weaponPlaceholder);
         }
 
+
         public void UpdatePlayerAbilities()
         {
-            HandleAbilitiesOnce();
+            UseAbilitiesByInput();
 
             if (equipedWeapon == null) { return; }
 
-            if (equipedWeapon.AnAbilityUsed)
-            {
-                equipedWeapon.UpdateWeapon();
-            }
+            equipedWeapon.UpdateWeapon();
         }
 
-        private void HandleAbilitiesOnce()
+        private void UseAbilitiesByInput()
         {
             if (basicAttackUsed)
             {
@@ -87,9 +83,16 @@ namespace Warborn.Characters.Player.Combat
             {
                 equipedWeapon.UseAbility(PlayerAbilityStates.Ultimate, localPlayer);
                 ultimateAbilityUsed = false;
-
             }
         }
+
+        #region Getters and Setters
+        public Weapon GetEquipedWeapon()
+        {
+            return equipedWeapon;
+        }
+        #endregion
     }
+
 }
 

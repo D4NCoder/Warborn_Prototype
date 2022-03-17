@@ -9,42 +9,34 @@ public class LightningSwordDashAndSlash : Ability
     public float DashSpeed;
     private bool dashed = false;
 
-    private float timer;
     public override void PerformAbility(GameObject _localPlayer, GameObject _target)
     {
         // Set CanUse to false
-        canUse = false;
-        timer = Cooldown;
+        CanUse = false;
+        Timer = Cooldown;
+        SetLocalPlayer(_localPlayer);
         _localPlayer.GetComponent<Animator>().SetBool(PlayerAnimationTriggers[1], false);
         _localPlayer.GetComponent<Animator>().SetBool(PlayerAnimationTriggers[0], true);
 
-        // Dash animation
-        // Start the dash animation
-        // move player to certain destination
-        // Slash animation
-        // Deal damage
-
     }
-
-    public override void UpdateAbility(GameObject _localPlayer)
+    public override void UpdateAbility()
     {
-        timer -= Time.deltaTime;
-        if (Cooldown - timer <= 0.2)
+        if (CanUse) { return; }
+        if (Cooldown - Timer <= 0.2)
         {
-            Rigidbody localPlayerRb = _localPlayer.GetComponent<Rigidbody>();
-            localPlayerRb.AddForce(_localPlayer.transform.forward * DashSpeed, ForceMode.Impulse);
-
+            Debug.Log("Dashing");
+            Rigidbody localPlayerRb = localPlayer.GetComponent<Rigidbody>();
+            localPlayerRb.AddForce(localPlayer.transform.forward * DashSpeed, ForceMode.Impulse);
         }
         else
         {
-            _localPlayer.GetComponent<Animator>().SetBool(PlayerAnimationTriggers[0], false);
-            _localPlayer.GetComponent<Animator>().SetBool(PlayerAnimationTriggers[1], true);
-        }
-
-        if (timer <= 0)
-        {
-            canUse = true;
-            timer = Cooldown;
+            localPlayer.GetComponent<Animator>().SetBool(PlayerAnimationTriggers[0], false);
+            localPlayer.GetComponent<Animator>().SetBool(PlayerAnimationTriggers[1], true);
         }
     }
+    public override void OnAbilityEnd()
+    {
+        localPlayer.GetComponent<Animator>().SetBool(PlayerAnimationTriggers[1], false);
+    }
+
 }

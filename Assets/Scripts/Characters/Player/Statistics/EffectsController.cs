@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
+using System.Linq;
 
 namespace Warborn.Characters.Player.Statistics
 {
-    public class EffectsController : MonoBehaviour
+    public class EffectsController : NetworkBehaviour
     {
         public List<Effect> CurrentEffects = new List<Effect>();
+
         private void Update()
         {
             if (CurrentEffects.Count < 1) { return; }
@@ -30,6 +33,7 @@ namespace Warborn.Characters.Player.Statistics
             }
         }
 
+
         private IEnumerator PerformEffectMultipleTimes(Effect effect, int times, float time)
         {
             if (times <= 0) { yield break; } // I dont know what that is going to couse
@@ -37,6 +41,39 @@ namespace Warborn.Characters.Player.Statistics
 
             yield return new WaitForSeconds(time);
             StartCoroutine(PerformEffectMultipleTimes(effect, times - 1, time));
+        }
+
+
+        public void AddEffects(List<Effect> effects)
+        {
+            print("We are trying to add effect on player");
+
+            // List<string> effectsName = new List<string>();
+            // foreach (Effect effect in effects)
+            // {
+            //     effectsName.Add(effect.Name);
+            // }
+            // CmdAddEffects(effectsName);
+        }
+
+        [Command]
+        public void CmdAddEffects(List<string> effects)
+        {
+            foreach (string effect in effects)
+            {
+                List<Effect> effectsInstances = EffectsDatabase.Instance.AllEffects.Where(x => x.Name == effect).ToList();
+                CurrentEffects.AddRange(effectsInstances);
+            }
+            RpcAddEffects(effects);
+        }
+        [ClientRpc]
+        public void RpcAddEffects(List<string> effects)
+        {
+            foreach (string effect in effects)
+            {
+                List<Effect> effectsInstances = EffectsDatabase.Instance.AllEffects.Where(x => x.Name == effect).ToList();
+                CurrentEffects.AddRange(effectsInstances);
+            }
         }
     }
 }

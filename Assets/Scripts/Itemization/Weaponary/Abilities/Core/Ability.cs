@@ -14,11 +14,36 @@ public abstract class Ability : ScriptableObject
     public List<string> PlayerAnimationTriggers;
     public List<Effect> EffectsToApply;
 
-    [Header("Specifics")]
-    public bool canUse;
+    [Header("Cooldown Handling")]
+    public float Timer;
     public float Cooldown;
+
+    [Header("Specifics")]
+    public bool CanUse;
+    public bool EffectsApplied;
+
+    protected GameObject localPlayer;
 
     public abstract void PerformAbility(GameObject _localPlayer, GameObject _target);
 
-    public abstract void UpdateAbility(GameObject _localPlayer);
+    public abstract void UpdateAbility();
+
+    public virtual void StartCooldown(Weapon weapon)
+    {
+        Timer -= Time.deltaTime;
+        if (Timer <= 0)
+        {
+            OnAbilityEnd();
+            CanUse = true;
+            Timer = Cooldown;
+            EffectsApplied = false;
+            weapon.onCooldown -= StartCooldown;
+        }
+    }
+    public abstract void OnAbilityEnd();
+
+    protected void SetLocalPlayer(GameObject _localPlayer)
+    {
+        localPlayer = _localPlayer;
+    }
 }

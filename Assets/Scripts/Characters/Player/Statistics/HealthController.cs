@@ -12,9 +12,14 @@ namespace Warborn.Characters.Player.Statistics
             return health;
         }
 
-        public void RemoveHealth(int damage)
+        public void RemoveHealth(int _damage)
         {
-            health -= damage;
+            health -= _damage;
+        }
+
+        public void SetBaseHealth(int _health)
+        {
+            health = _health;
         }
     }
 }

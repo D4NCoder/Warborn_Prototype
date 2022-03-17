@@ -19,5 +19,7 @@ MonoBehaviour:
   - LightningSword_BA
   EffectsToApply:
   - {fileID: 11400000, guid: 8d7697041640a6c4ab5348b10b14beb7, type: 2}
-  canUse: 0
-  Cooldown: 0.5
+  Timer: 0.6
+  Cooldown: 0.6
+  CanUse: 1
+  EffectsApplied: 0
