@@ -12,8 +12,7 @@ GameObject:
   - component: {fileID: 1348866372323078453}
   - component: {fileID: 3845183031784080895}
   - component: {fileID: 8731300027450187275}
-  - component: {fileID: 3825784090853739735}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Lightning Sword
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,15 +95,3 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.32313687, y: 2.4286373, z: 0.12025715}
   m_Center: {x: -0.015494754, y: 0.9086051, z: -0.00000035810345}
---- !u!114 &3825784090853739735
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3340591102015448106}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0411573350231ce46a7c7586aad37177, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

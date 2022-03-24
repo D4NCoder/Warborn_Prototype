@@ -1,98 +1,124 @@
-using System;
 using UnityEngine;
-using Warborn_Prototype.Inputs;
+using Mirror;
+
 
 namespace Warborn.Characters.Player.Combat
 {
-    public class PlayerAbilities : MonoBehaviour
+    public enum PlayerAbilityTypes
     {
-        #region Controls
-        private Controls controls;
-        private Controls Controls
-        {
-            get
-            {
-                if (controls != null) { return controls; }
-                return controls = new Controls();
-            }
-        }
-
-        private void OnEnable() => Controls.Enable();
-        private void OnDisable() => Controls.Disable();
-
-        private void InitControlsCallbacks()
-        {
-            Controls.Player.BasicAttack.performed += ctx => BasicAttack();
-            Controls.Player.Ability1.performed += ctx => Ability1();
-            Controls.Player.Ability2.performed += ctx => Ability2();
-            Controls.Player.Ability3.performed += ctx => UltimateAbility();
-        }
-
-        private void BasicAttack() => basicAttackUsed = true;
-
-        private void Ability1() => ability1Used = true;
-        private void Ability2() => ability2Used = true;
-        private void UltimateAbility() => ultimateAbilityUsed = true;
-        #endregion
-
+        BasicAttack, Ability1, Ability2, UltimateAbility
+    }
+    public class PlayerAbilities : NetworkBehaviour
+    {
+        #region Editor variables
         [Header("References")]
-        [SerializeField] private Weapon equipedWeapon = null;
-        [SerializeField] private GameObject localPlayer = null;
         [SerializeField] private Transform weaponPlaceholder = null;
 
-        private bool basicAttackUsed = false;
-        private bool ability1Used = false;
-        private bool ability2Used = false;
-        private bool ultimateAbilityUsed = false;
+        [Header("EquipedWeapon")]
+        [SerializeField] private Weapon EquipedWeapon;
 
-        private void Start()
+        [SyncVar]
+        public int EquipedWeaponId;
+        [SyncVar]
+        public bool hasEquipedWeapon = false;
+
+        [SerializeField] private PlayerAbilityTypes lastAbilityUsed;
+        #endregion
+
+        #region Event subscriptions
+        [Client]
+        public void OnAbilityPressed(PlayerAbilityTypes abilityType)
         {
-            InitControlsCallbacks();
-            equipedWeapon.EquipWeapon(weaponPlaceholder);
-        }
-
-
-        public void UpdatePlayerAbilities()
-        {
-            UseAbilitiesByInput();
-
-            if (equipedWeapon == null) { return; }
-
-            equipedWeapon.UpdateWeapon();
-        }
-
-        private void UseAbilitiesByInput()
-        {
-            if (basicAttackUsed)
-            {
-                equipedWeapon.UseAbility(PlayerAbilityStates.BasicAttack, localPlayer);
-                basicAttackUsed = false;
-            }
-            else if (ability1Used)
-            {
-                equipedWeapon.UseAbility(PlayerAbilityStates.Ability1, localPlayer);
-                ability1Used = false;
-            }
-            else if (ability2Used)
-            {
-                equipedWeapon.UseAbility(PlayerAbilityStates.Ability2, localPlayer);
-                ability2Used = false;
-
-            }
-            else if (ultimateAbilityUsed)
-            {
-                equipedWeapon.UseAbility(PlayerAbilityStates.Ultimate, localPlayer);
-                ultimateAbilityUsed = false;
-            }
-        }
-
-        #region Getters and Setters
-        public Weapon GetEquipedWeapon()
-        {
-            return equipedWeapon;
+            lastAbilityUsed = abilityType;
+            CmdPerformAbility(abilityType);
         }
         #endregion
-    }
 
+        #region Client
+
+        #region Equip Weapon
+        [Client]
+        public void EquipWeapon()
+        {
+            CmdEquipWeaponById(WeaponInstances.LIGHTNING_SWORD);
+        }
+
+        public Weapon GetEquipedWeapon()
+        {
+            return EquipedWeapon;
+        }
+
+        [Client]
+        public void ReequipWeaponOnClientFromServer()
+        {
+            Weapon weapon = WeaponDatabase.GetInstance().GetWeaponById(EquipedWeaponId);
+            EquipedWeapon = weapon;
+            EquipedWeapon.InitializeWeapon(this.gameObject);
+            GameObject _weaponPrefab = Instantiate(EquipedWeapon.weaponData.WeaponPrefab, weaponPlaceholder.position, weaponPlaceholder.rotation, weaponPlaceholder);
+        }
+
+        [TargetRpc]
+        public void RpcEquipWeaponById(NetworkConnection target, int id)
+        {
+            Weapon weapon = WeaponDatabase.GetInstance().GetWeaponById(id);
+            EquipedWeapon = weapon;
+            EquipedWeapon.InitializeWeapon(this.gameObject);
+            GameObject _weaponPrefab = Instantiate(EquipedWeapon.weaponData.WeaponPrefab, weaponPlaceholder.position, weaponPlaceholder.rotation, weaponPlaceholder);
+        }
+        #endregion
+
+        #region Perform Ability
+        [ClientRpc]
+        public void RpcPerformAbility(PlayerAbilityTypes type)
+        {
+            // Move this code upon the 
+
+            EquipedWeapon.PerformAbility(type);
+        }
+        #endregion
+
+        #endregion
+
+        #region Server
+
+        #region Perform Ability
+        // Runs on Update
+        [Server]
+        public void UpdateWeaponsAbilities()
+        {
+            // Update cooldown
+            if (EquipedWeapon == null) { return; }
+
+            EquipedWeapon.CalculateAbilitiesCooldown();
+        }
+
+        [Command]
+        public void CmdPerformAbility(PlayerAbilityTypes type)
+        {
+            lastAbilityUsed = type;
+            if (EquipedWeapon.IsAbilityOnCooldown(type)) { return; }
+
+            RpcPerformAbility(type);
+        }
+        #endregion
+
+        #region Equip Weapon
+        [Command]
+        public void CmdEquipWeaponById(int id)
+        {
+            // Go to database and search for weapon
+            Weapon weapon = WeaponDatabase.GetInstance().GetWeaponById(id);
+            EquipedWeaponId = id;
+            hasEquipedWeapon = true;
+            if (weapon == null) { return; }
+            EquipedWeapon = weapon;
+            EquipedWeapon.InitializeWeapon(this.gameObject);
+            GameObject _weaponPrefab = Instantiate(EquipedWeapon.weaponData.WeaponPrefab, weaponPlaceholder.position, weaponPlaceholder.rotation, weaponPlaceholder);
+            RpcEquipWeaponById(connectionToClient, id);
+        }
+        #endregion
+
+        #endregion
+    }
 }
 

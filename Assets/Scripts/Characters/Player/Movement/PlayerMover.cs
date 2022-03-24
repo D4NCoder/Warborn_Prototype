@@ -1,66 +1,26 @@
-using System.Collections;
+using Mirror;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using Warborn_Prototype.Inputs;
 
 namespace Warborn.Characters.Player.Movement
 {
-    public class PlayerMover : MonoBehaviour
+    public class PlayerMover : NetworkBehaviour
     {
-        #region  Variables
+        #region  Editor variables
         [Header("References")]
         [SerializeField] private Rigidbody playerBody = null;
         [SerializeField] private Animator playerAnimator = null;
         [Header("Initial variables")]
         [SerializeField] private float movementSpeed = 7f;
         [SerializeField] private bool isPlayerMooving = false;
-        [SerializeField] private bool hasPlayerJumped = false;
 
-        private bool shouldCheckForJump = false;
+        [SyncVar]
+        [SerializeField] private bool isPlayerGrounded = false;
+        #endregion
 
         private Vector2 playerMovementInput;
-        private Controls controls;
-        private Controls Controls
-        {
-            get
-            {
-                if (controls != null) { return controls; }
-                return controls = new Controls();
-            }
-        }
-        #endregion
 
-        #region Initializing Controls
-        private void OnEnable() => Controls.Enable();
-        private void OnDisable() => Controls.Disable();
-        private void Start()
+        public bool TryMove()
         {
-            InitControlsCallbacks();
-        }
-        private void InitControlsCallbacks()
-        {
-            Controls.Player.Move.performed += ctx => StartMoving(ctx.ReadValue<Vector2>());
-            Controls.Player.Move.canceled += ctx => CancelMovement();
-        }
-        #endregion
-
-        #region Controls callbacks
-        private void StartMoving(Vector2 _movementVector)
-        {
-            playerMovementInput = _movementVector;
-            isPlayerMooving = true;
-        }
-        private void CancelMovement()
-        {
-            playerMovementInput = Vector2.zero;
-            isPlayerMooving = false;
-        }
-
-        #endregion
-
-        public bool TryMove(bool _isPlayerGrounded)
-        {
-
             Vector3 _moveVector = transform.TransformDirection(new Vector3(playerMovementInput.x, 0f, playerMovementInput.y)) * movementSpeed;
             playerBody.velocity = new Vector3(_moveVector.x, playerBody.velocity.y, _moveVector.z);
 
@@ -70,5 +30,24 @@ namespace Warborn.Characters.Player.Movement
 
             return true;
         }
+
+        #region Events subscription methods
+        public void StartMoving(Vector2 _movementVector)
+        {
+            playerMovementInput = _movementVector;
+            isPlayerMooving = true;
+        }
+        public void CancelMovement()
+        {
+            playerMovementInput = Vector2.zero;
+            isPlayerMooving = false;
+        }
+
+        [Command]
+        public void CmdOnHitGround(bool _isPlayerGrounded)
+        {
+            isPlayerGrounded = _isPlayerGrounded;
+        }
+        #endregion
     }
 }

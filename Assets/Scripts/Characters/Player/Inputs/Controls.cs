@@ -1,4 +1,4 @@
-// GENERATED AUTOMATICALLY FROM 'Assets/Game/Core/Input/Controls.inputactions'
+// GENERATED AUTOMATICALLY FROM 'Assets/Game/_Core/Input/Controls.inputactions'
 
 using System;
 using System.Collections;
@@ -69,7 +69,7 @@ namespace Warborn_Prototype.Inputs
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Ability3"",
+                    ""name"": ""UltimateAbility"",
                     ""type"": ""Button"",
                     ""id"": ""60862474-ce97-4776-a26f-933d6f144aac"",
                     ""expectedControlType"": ""Button"",
@@ -184,7 +184,7 @@ namespace Warborn_Prototype.Inputs
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Ability3"",
+                    ""action"": ""UltimateAbility"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -229,7 +229,7 @@ namespace Warborn_Prototype.Inputs
             m_Player_BasicAttack = m_Player.FindAction("BasicAttack", throwIfNotFound: true);
             m_Player_Ability1 = m_Player.FindAction("Ability1", throwIfNotFound: true);
             m_Player_Ability2 = m_Player.FindAction("Ability2", throwIfNotFound: true);
-            m_Player_Ability3 = m_Player.FindAction("Ability3", throwIfNotFound: true);
+            m_Player_UltimateAbility = m_Player.FindAction("UltimateAbility", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -285,7 +285,7 @@ namespace Warborn_Prototype.Inputs
         private readonly InputAction m_Player_BasicAttack;
         private readonly InputAction m_Player_Ability1;
         private readonly InputAction m_Player_Ability2;
-        private readonly InputAction m_Player_Ability3;
+        private readonly InputAction m_Player_UltimateAbility;
         public struct PlayerActions
         {
             private @Controls m_Wrapper;
@@ -296,7 +296,7 @@ namespace Warborn_Prototype.Inputs
             public InputAction @BasicAttack => m_Wrapper.m_Player_BasicAttack;
             public InputAction @Ability1 => m_Wrapper.m_Player_Ability1;
             public InputAction @Ability2 => m_Wrapper.m_Player_Ability2;
-            public InputAction @Ability3 => m_Wrapper.m_Player_Ability3;
+            public InputAction @UltimateAbility => m_Wrapper.m_Player_UltimateAbility;
             public InputActionMap Get() { return m_Wrapper.m_Player; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -324,9 +324,9 @@ namespace Warborn_Prototype.Inputs
                     @Ability2.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAbility2;
                     @Ability2.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAbility2;
                     @Ability2.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAbility2;
-                    @Ability3.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAbility3;
-                    @Ability3.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAbility3;
-                    @Ability3.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAbility3;
+                    @UltimateAbility.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnUltimateAbility;
+                    @UltimateAbility.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnUltimateAbility;
+                    @UltimateAbility.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnUltimateAbility;
                 }
                 m_Wrapper.m_PlayerActionsCallbackInterface = instance;
                 if (instance != null)
@@ -349,9 +349,9 @@ namespace Warborn_Prototype.Inputs
                     @Ability2.started += instance.OnAbility2;
                     @Ability2.performed += instance.OnAbility2;
                     @Ability2.canceled += instance.OnAbility2;
-                    @Ability3.started += instance.OnAbility3;
-                    @Ability3.performed += instance.OnAbility3;
-                    @Ability3.canceled += instance.OnAbility3;
+                    @UltimateAbility.started += instance.OnUltimateAbility;
+                    @UltimateAbility.performed += instance.OnUltimateAbility;
+                    @UltimateAbility.canceled += instance.OnUltimateAbility;
                 }
             }
         }
@@ -373,7 +373,7 @@ namespace Warborn_Prototype.Inputs
             void OnBasicAttack(InputAction.CallbackContext context);
             void OnAbility1(InputAction.CallbackContext context);
             void OnAbility2(InputAction.CallbackContext context);
-            void OnAbility3(InputAction.CallbackContext context);
+            void OnUltimateAbility(InputAction.CallbackContext context);
         }
     }
 }
