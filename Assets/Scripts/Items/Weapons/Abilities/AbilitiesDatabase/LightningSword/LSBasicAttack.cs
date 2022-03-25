@@ -1,20 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Warborn.Items.Weapons.Abilities.Core;
 
-public class LSBasicAttack : Ability
+namespace Warborn.Items.Weapons.Abilities.AbilitiesDatabase
 {
-    public override void PerformAbility(GameObject localPlayer)
+    public class LSBasicAttack : Ability
     {
-        base.PlayAnimation("LightningSword_BA", localPlayer);
-    }
+        public override void PerformAbility(GameObject localPlayer)
+        {
+            base.PlayAnimation("LightningSword_BA", localPlayer);
+        }
 
-    public override object Clone()
-    {
-        Ability ability = new LSBasicAttack();
-        ability.abilityData = base.abilityData;
-        ability.LoadAbilityData();
+        public override object Clone()
+        {
+            Ability ability = new LSBasicAttack();
+            ability.abilityData = base.abilityData;
+            ability.LoadAbilityData();
 
-        return ability;
+            return ability;
+        }
     }
 }
+

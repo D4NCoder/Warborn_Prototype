@@ -1,14 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using Warborn.Items.Weapons.Weapons.Core;
 
-public class LightningSword : Weapon
+namespace Warborn.Items.Weapons.Weapons.WeaponsDatabase
 {
-    public override object Clone()
+    public class LightningSword : Weapon
     {
-        Weapon weapon = new LightningSword();
-        weapon.weaponData = base.weaponData;
+        public override object Clone()
+        {
+            Weapon weapon = new LightningSword();
+            weapon.weaponData = base.weaponData;
 
-        return weapon;
+            return weapon;
+        }
     }
 }
+

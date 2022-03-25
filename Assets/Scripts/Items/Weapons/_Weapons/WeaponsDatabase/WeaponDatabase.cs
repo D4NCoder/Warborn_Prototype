@@ -1,40 +1,45 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Warborn.Items.Weapons.Weapons.Core;
 
-public class WeaponDatabase : MonoBehaviour
+namespace Warborn.Items.Weapons.Weapons.WeaponsDatabase
 {
-    private static WeaponDatabase Instance;
-    [SerializeField] private string PathToWeaponDatas = "";
-    public List<Weapon> Weapons;
-    public void Start()
+    public class WeaponDatabase : MonoBehaviour
     {
-        if (Instance == null) { Instance = this; }
-        InitializeWeapons();
-    }
+        private static WeaponDatabase Instance;
+        [SerializeField] private string PathToWeaponDatas = "";
+        public List<Weapon> Weapons;
+        public void Start()
+        {
+            if (Instance == null) { Instance = this; }
+            InitializeWeapons();
+        }
 
-    private void InitializeWeapons()
-    {
-        Weapons = new List<Weapon>();
+        private void InitializeWeapons()
+        {
+            Weapons = new List<Weapon>();
 
-        AddNewWeapon(new LightningSword(), nameof(LightningSword));
-    }
+            AddNewWeapon(new LightningSword(), nameof(LightningSword));
+        }
 
-    public static WeaponDatabase GetInstance()
-    {
-        return Instance;
-    }
+        public static WeaponDatabase GetInstance()
+        {
+            return Instance;
+        }
 
-    public Weapon GetWeaponById(int id)
-    {
-        List<Weapon> copies = Weapons.Select(x => (Weapon)x.Clone()).ToList();
+        public Weapon GetWeaponById(int id)
+        {
+            List<Weapon> copies = Weapons.Select(x => (Weapon)x.Clone()).ToList();
 
-        return copies.Where(x => x.weaponData.Id == id).FirstOrDefault();
-    }
+            return copies.Where(x => x.weaponData.Id == id).FirstOrDefault();
+        }
 
-    private void AddNewWeapon(Weapon weapon, string weaponName)
-    {
-        weapon.weaponData = (WeaponData)Resources.Load(PathToWeaponDatas + weaponName);
-        Weapons.Add(weapon);
+        private void AddNewWeapon(Weapon weapon, string weaponName)
+        {
+            weapon.weaponData = (WeaponData)Resources.Load(PathToWeaponDatas + weaponName);
+            Weapons.Add(weapon);
+        }
     }
 }
+

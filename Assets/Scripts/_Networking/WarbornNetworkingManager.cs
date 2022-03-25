@@ -1,14 +1,13 @@
 using Mirror;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Warborn.Characters.Player.Core;
+using Warborn.Networking.Player;
 
-namespace Warborn.Networking
+namespace Warborn.Networking.Manager
 {
     public class WarbornNetworkingManager : NetworkManager
     {
         [SerializeField] private Transform playersParent = null;
+
         public override void OnServerAddPlayer(NetworkConnection conn)
         {
             // Spawn Networking player prefab

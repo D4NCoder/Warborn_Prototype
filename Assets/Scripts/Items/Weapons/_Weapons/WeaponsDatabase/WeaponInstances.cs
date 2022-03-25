@@ -1,8 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public static class WeaponInstances
+namespace Warborn.Items.Weapons.Weapons.WeaponsDatabase
 {
-    public const int LIGHTNING_SWORD = 0;
+    public static class WeaponInstances
+    {
+        public const int LIGHTNING_SWORD = 0;
+    }
 }
+

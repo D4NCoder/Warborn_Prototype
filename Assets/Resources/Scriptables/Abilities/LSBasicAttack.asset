@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd8fa2d518339f6489c4b039a879bff3, type: 3}
   m_Name: LSBasicAttack
   m_EditorClassIdentifier: 
+  Id: 0
   Name: LSBasicAttack
   Description: Basic attack for Lightning sword
   Icon: {fileID: 0}
@@ -19,4 +20,4 @@ MonoBehaviour:
   - LightningSword_BA
   EffectsToApply:
   - {fileID: 11400000, guid: 7811a334d9936bd4d83beee51407999d, type: 2}
-  BasicCooldown: 5
+  BasicCooldown: 0.8
