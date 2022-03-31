@@ -3192,7 +3192,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_CollideAgainst:
     serializedVersion: 2
-    m_Bits: 65
+    m_Bits: 193
   m_IgnoreTag: Player
   m_TransparentLayers:
     serializedVersion: 2
@@ -3806,6 +3806,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ed6cb4c64faeec4698eb9900d418777, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
 --- !u!114 &3689297181956563894
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3855,7 +3857,6 @@ MonoBehaviour:
   playerBody: {fileID: 3572139524497270637}
   playerAnimator: {fileID: 9012521343041338346}
   movementSpeed: 7
-  isPlayerMooving: 0
   isPlayerGrounded: 0
 --- !u!114 &-2067176497316383675
 MonoBehaviour:
@@ -3871,11 +3872,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  PlayerName: 
   inputHandler: {fileID: 3881845549269732448}
   playerMover: {fileID: 7262619492713753405}
   collisionDetector: {fileID: 3689297181956563894}
   playerAbilities: {fileID: 2677877570528598020}
-  playerEffects: {fileID: 3900729291251429428}
 --- !u!114 &2677877570528598020
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3891,6 +3892,9 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   weaponPlaceholder: {fileID: 552650677759684594}
+  weaponInstanceInfo: {fileID: 0}
+  EquipedWeaponId: 0
+  hasEquipedWeapon: 0
   lastAbilityUsed: 0
 --- !u!114 &3900729291251429428
 MonoBehaviour:
