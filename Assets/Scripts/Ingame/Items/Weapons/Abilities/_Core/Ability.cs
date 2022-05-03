@@ -1,37 +1,51 @@
 using UnityEngine;
 using System;
 
-namespace Warborn.Items.Weapons.Abilities.Core
+namespace Warborn.Ingame.Items.Weapons.Abilities.Core
 {
     public abstract class Ability : ICloneable
     {
-        public AbilityData abilityData;
+        #region Class members
+        public AbilityData AbilityData;
         private bool isOnCooldown = false;
         private float timer;
 
         public event Action<Ability> onCooldownDone;
+        #endregion
 
-        public abstract void PerformAbility(GameObject localPlayer);
-
-        protected void PlayAnimation(string animationTrigger, GameObject player)
+        #region Initialization
+        public virtual void LoadAbilityData()
         {
-            foreach (string animation in abilityData.PlayerAnimationTriggers)
+            timer = AbilityData.BasicCooldown;
+        }
+
+        public abstract object Clone();
+        #endregion
+
+        #region Perfrom ability with animations
+        public abstract void PerformAbility(GameObject _localPlayer);
+
+        protected void PlayAnimation(string _animationTrigger, GameObject _player)
+        {
+            foreach (string _animation in AbilityData.PlayerAnimationTriggers)
             {
-                if (animation == animationTrigger)
+                if (_animation == _animationTrigger)
                 {
-                    player.GetComponent<Animator>().SetTrigger(animation);
+                    _player.GetComponent<Animator>().SetTrigger(_animation);
                 }
             }
         }
+        #endregion
 
+        #region Cooldown
         public bool IsOnCooldown()
         {
             return isOnCooldown;
         }
 
-        public void SetCooldown(bool value)
+        public void SetCooldown(bool _value)
         {
-            isOnCooldown = value;
+            isOnCooldown = _value;
         }
         public void CalculateCooldown()
         {
@@ -40,17 +54,12 @@ namespace Warborn.Items.Weapons.Abilities.Core
             if (timer <= 0)
             {
                 isOnCooldown = false;
-                timer = abilityData.BasicCooldown;
+                timer = AbilityData.BasicCooldown;
                 onCooldownDone?.Invoke(this);
             }
         }
+        #endregion
 
-        public virtual void LoadAbilityData()
-        {
-            timer = abilityData.BasicCooldown;
-        }
-
-        public abstract object Clone();
 
     }
 }

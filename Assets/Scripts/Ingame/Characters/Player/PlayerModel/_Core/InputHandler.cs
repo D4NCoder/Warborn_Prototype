@@ -2,13 +2,13 @@ using System;
 using UnityEngine;
 
 using Mirror;
-using Warborn.Characters.Player.PlayerModel.Inputs;
-using Warborn.Characters.Player.PlayerModel.Combat;
+using Warborn.Ingame.Characters.Player.PlayerModel.Inputs;
+using Warborn.Ingame.Characters.Player.PlayerModel.Combat;
 
 /*
  * Input Handler class is purely responsible for handling input on Clients side
 */
-namespace Warborn.Characters.Player.PlayerModel.Core
+namespace Warborn.Ingame.Characters.Player.PlayerModel.Core
 {
     public class InputHandler : NetworkBehaviour
     {
@@ -43,6 +43,8 @@ namespace Warborn.Characters.Player.PlayerModel.Core
         public event Action<PlayerAbilityTypes> onAbility1;
         public event Action<PlayerAbilityTypes> onAbility2;
         public event Action<PlayerAbilityTypes> onUltimateAbility;
+        // Interaction with interactables
+        public event Action onInteract;
         #endregion
 
         private void InitControlsCallbacks()
@@ -55,6 +57,8 @@ namespace Warborn.Characters.Player.PlayerModel.Core
             Controls.Player.Ability1.performed += ctx => onAbility1?.Invoke(PlayerAbilityTypes.Ability1);
             Controls.Player.Ability2.performed += ctx => onAbility2?.Invoke(PlayerAbilityTypes.Ability2);
             Controls.Player.UltimateAbility.performed += ctx => onUltimateAbility?.Invoke(PlayerAbilityTypes.UltimateAbility);
+            // Interaction with interactables
+            Controls.Player.Interact.performed += ctx => onInteract?.Invoke();
         }
     }
 

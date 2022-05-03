@@ -1,15 +1,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using Warborn.Items.Weapons.Effects.Core;
+using Warborn.Ingame.Items.Weapons.Effects.Core;
 
-namespace Warborn.Items.Weapons.Effects.EffectsDatabase
+namespace Warborn.Ingame.Items.Weapons.Effects.EffectsDatabase
 {
     public class EffectsDatabase : MonoBehaviour
     {
         private static EffectsDatabase Instance;
         [SerializeField] private string PathToEffectDatas = "";
         public List<Effect> Effects;
+
+        #region Initialization
         public void Start()
         {
             if (Instance == null) { Instance = this; }
@@ -22,27 +24,29 @@ namespace Warborn.Items.Weapons.Effects.EffectsDatabase
 
             AddNewEffect(new LSElectrocute(), nameof(LSElectrocute));
         }
+        #endregion
 
+        #region Getters
         public static EffectsDatabase GetInstance()
         {
             return Instance;
         }
-
-        public Effect GetEffectById(int id)
+        public Effect GetEffectById(int _id)
         {
-            List<Effect> copies = Effects.Select(x => (Effect)x.Clone()).ToList();
-            return copies.Where(x => x.effectData.Id == id).FirstOrDefault();
+            List<Effect> _copies = Effects.Select(x => (Effect)x.Clone()).ToList();
+            return _copies.Where(x => x.effectData.Id == _id).FirstOrDefault();
         }
 
-        private void AddNewEffect(Effect effect, string effectName)
+        public List<int> GetEffectsIds(List<Effect> _effects)
         {
-            effect.effectData = (EffectData)Resources.Load(PathToEffectDatas + effectName);
-            Effects.Add(effect);
+            return _effects.Select(x => x.effectData.Id).ToList();
         }
+        #endregion
 
-        public List<int> GetEffectsIds(List<Effect> effects)
+        private void AddNewEffect(Effect _effect, string _effectName)
         {
-            return effects.Select(x => x.effectData.Id).ToList();
+            _effect.effectData = (EffectData)Resources.Load(PathToEffectDatas + _effectName);
+            Effects.Add(_effect);
         }
     }
 

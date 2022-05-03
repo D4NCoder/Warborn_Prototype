@@ -1,17 +1,22 @@
 using Mirror;
 using UnityEngine;
-using Warborn.Characters.Player.PlayerModel.Collisions;
-using Warborn.Characters.Player.PlayerModel.Combat;
-using Warborn.Characters.Player.PlayerModel.Movement;
+using Warborn.Ingame.Characters.Player.PlayerModel.Collisions;
+using Warborn.Ingame.Characters.Player.PlayerModel.Combat;
+using Warborn.Ingame.Characters.Player.PlayerModel.Movement;
 using Warborn.Items.Weapons.Weapons.WeaponsDatabase;
 
-namespace Warborn.Characters.Player.PlayerModel.Core
+namespace Warborn.Ingame.Characters.Player.PlayerModel.Core
 {
     public class PlayerController : NetworkBehaviour
     {
-        #region Editor variables
+        #region Variables and Properties
+        #region Players's information
         [Header("Player's information")]
         [SyncVar(hook = nameof(SetName))] public string PlayerName;
+        #endregion
+
+        #region References
+
 
         [Header("Player's input")]
         [SerializeField] private InputHandler inputHandler = null;
@@ -22,10 +27,17 @@ namespace Warborn.Characters.Player.PlayerModel.Core
 
         [Header("Player Combat")]
         [SerializeField] private PlayerAbilities playerAbilities = null;
+
+        #endregion
+
+        #region Getters
+        public PlayerCollisionDetector PlayerCollisionDetector { get { return collisionDetector; } }
+        public PlayerMover PlayerMover { get { return playerMover; } }
+        public InputHandler InputHandler { get { return inputHandler; } }
+        #endregion
         #endregion
 
         #region Start & Update methods
-
         public override void OnStartServer()
         {
             base.OnStartServer();
@@ -36,13 +48,12 @@ namespace Warborn.Characters.Player.PlayerModel.Core
         {
             base.OnStartClient();
             playerAbilities.InitWeaponIfNull();
-            LockCursor();
 
             if (!hasAuthority) { return; }
+            LockCursor();
             InitClientEvents();
             playerAbilities.EquipWeapon(WeaponInstances.LIGHTNING_SWORD);
         }
-
 
         void FixedUpdate()
         {
@@ -95,20 +106,7 @@ namespace Warborn.Characters.Player.PlayerModel.Core
         {
             this.gameObject.name = newName;
         }
-
         #endregion
 
-        #region Getters and Setters
-        public PlayerCollisionDetector GetPlayerCollisionDetector()
-        {
-            return collisionDetector;
-        }
-
-        public PlayerMover GetPlayerMover()
-        {
-            return playerMover;
-        }
-
-        #endregion
     }
 }

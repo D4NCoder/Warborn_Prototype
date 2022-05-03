@@ -1,10 +1,10 @@
 using System;
 using UnityEngine;
-using Warborn.Characters.Player.PlayerModel.Combat;
-using Warborn.Items.Weapons.Abilities.AbilitiesDatabase;
-using Warborn.Items.Weapons.Abilities.Core;
+using Warborn.Ingame.Characters.Player.PlayerModel.Combat;
+using Warborn.Ingame.Items.Weapons.Abilities.AbilitiesDatabase;
+using Warborn.Ingame.Items.Weapons.Abilities.Core;
 
-namespace Warborn.Items.Weapons.Weapons.Core
+namespace Warborn.Ingame.Items.Weapons.Weapons.Core
 {
     public abstract class Weapon : ICloneable
     {
@@ -12,13 +12,14 @@ namespace Warborn.Items.Weapons.Weapons.Core
         public WeaponData weaponData;
         public Ability BasicAttack;
         public GameObject LocalPlayer;
+
         private event Action onCooldownAbilities;
         #endregion
 
         #region Performing the ability of a weapon
-        public void PerformAbility(PlayerAbilityTypes ability)
+        public void PerformAbility(PlayerAbilityTypes _ability)
         {
-            if (ability == PlayerAbilityTypes.BasicAttack)
+            if (_ability == PlayerAbilityTypes.BasicAttack)
             {
                 BasicAttack.PerformAbility(LocalPlayer);
                 onCooldownAbilities += BasicAttack.CalculateCooldown;
@@ -26,10 +27,10 @@ namespace Warborn.Items.Weapons.Weapons.Core
                 BasicAttack.SetCooldown(true);
             }
         }
-        public bool IsAbilityOnCooldown(PlayerAbilityTypes type)
+        public bool IsAbilityOnCooldown(PlayerAbilityTypes _type)
         {
             bool valueToReturn = false;
-            if (type == PlayerAbilityTypes.BasicAttack)
+            if (_type == PlayerAbilityTypes.BasicAttack)
             {
                 valueToReturn = BasicAttack.IsOnCooldown();
             }
@@ -41,9 +42,9 @@ namespace Warborn.Items.Weapons.Weapons.Core
             onCooldownAbilities?.Invoke();
         }
 
-        private void OnAbilityCooldownEnded(Ability ability)
+        private void OnAbilityCooldownEnded(Ability _ability)
         {
-            onCooldownAbilities -= ability.CalculateCooldown;
+            onCooldownAbilities -= _ability.CalculateCooldown;
         }
         #endregion
 
@@ -56,7 +57,7 @@ namespace Warborn.Items.Weapons.Weapons.Core
 
         private void InitializeAbilities()
         {
-            // Go to database of Abilities and assign them
+            // TODO: Go to database of Abilities and assign each and one of them
             BasicAttack = AbilityDatabase.GetInstance().GetAbilityById(weaponData.BasicAttack.Id);
         }
 
@@ -64,16 +65,16 @@ namespace Warborn.Items.Weapons.Weapons.Core
         #endregion
 
         #region Getters and Setters
-        public AbilityData GetPressedAbilityData(PlayerAbilityTypes type)
+        public AbilityData GetPressedAbilityData(PlayerAbilityTypes _type)
         {
-            AbilityData abilityData = null;
+            AbilityData _abilityData = null;
 
-            if (type == PlayerAbilityTypes.BasicAttack)
+            if (_type == PlayerAbilityTypes.BasicAttack)
             {
-                abilityData = weaponData.BasicAttack;
+                _abilityData = weaponData.BasicAttack;
             }
 
-            return abilityData;
+            return _abilityData;
         }
 
         #endregion

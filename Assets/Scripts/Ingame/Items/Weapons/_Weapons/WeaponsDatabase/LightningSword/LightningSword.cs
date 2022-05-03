@@ -1,6 +1,6 @@
-using Warborn.Items.Weapons.Weapons.Core;
+using Warborn.Ingame.Items.Weapons.Weapons.Core;
 
-namespace Warborn.Items.Weapons.Weapons.WeaponsDatabase
+namespace Warborn.Ingame.Items.Weapons.Weapons.WeaponsDatabase
 {
     public class LightningSword : Weapon
     {

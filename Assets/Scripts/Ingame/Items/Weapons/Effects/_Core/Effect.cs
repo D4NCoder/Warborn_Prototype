@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Warborn.Items.Weapons.Effects.Core
+namespace Warborn.Ingame.Items.Weapons.Effects.Core
 {
     public abstract class Effect : ICloneable
     {

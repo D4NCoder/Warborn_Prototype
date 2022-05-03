@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Warborn.Items.Weapons.Effects.Core;
+using Warborn.Ingame.Items.Weapons.Effects.Core;
 
-namespace Warborn.Items.Weapons.Abilities.Core
+namespace Warborn.Ingame.Items.Weapons.Abilities.Core
 {
     [CreateAssetMenu(fileName = "AbilityData", menuName = "Abilities/New ability", order = 1)]
     public class AbilityData : ScriptableObject

@@ -1,29 +1,29 @@
 using UnityEngine;
-using Warborn.Characters.Player.PlayerModel.Collisions;
+using Warborn.Ingame.Characters.Player.PlayerModel.Collisions;
 
-namespace Warborn.Sounds
+namespace Warborn.Ingame.Sounds
 {
     [RequireComponent(typeof(AudioSource))]
     public class AreaMusicController : MonoBehaviour
     {
-        [SerializeField] private AudioSource MusicToPlay;
+        [SerializeField] private AudioSource musicToPlay;
         private void Start()
         {
-            MusicToPlay = this.gameObject.GetComponent<AudioSource>();
+            musicToPlay = this.gameObject.GetComponent<AudioSource>();
         }
-        private void OnTriggerEnter(Collider other)
+        private void OnTriggerEnter(Collider _other)
         {
-            if (other.gameObject.layer == CollisionType.PLAYER)
+            if (_other.gameObject.layer == CollisionType.PLAYER)
             {
-                MusicToPlay.Play();
+                musicToPlay.Play();
             }
         }
 
-        private void OnTriggerExit(Collider other)
+        private void OnTriggerExit(Collider _other)
         {
-            if (other.gameObject.layer == CollisionType.PLAYER)
+            if (_other.gameObject.layer == CollisionType.PLAYER)
             {
-                MusicToPlay.Stop();
+                musicToPlay.Stop();
             }
         }
     }

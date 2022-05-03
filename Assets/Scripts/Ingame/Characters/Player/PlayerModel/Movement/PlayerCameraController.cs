@@ -1,20 +1,26 @@
 using Cinemachine;
 using Mirror;
 using UnityEngine;
-using Warborn.Characters.Player.PlayerModel.Inputs;
+using Warborn.Ingame.Characters.Player.PlayerModel.Inputs;
 
-namespace Warborn.Characters.Player.PlayerModel.Movement
+namespace Warborn.Ingame.Characters.Player.PlayerModel.Movement
 {
     /*
         * Basic Camera movement script, that rotates the player as well
     */
     public class PlayerCameraController : NetworkBehaviour
     {
+        #region References
         [Header("Camera")]
         [SerializeField] private Vector2 maxFollowOffset = new Vector2(-1f, 6f);
         [SerializeField] private Vector2 cameraVelocity = new Vector2(4f, 0.25f);
-        [SerializeField] private Transform playerTransform = null;
         [SerializeField] private CinemachineVirtualCamera virtualCamera = null;
+        private CinemachineTransposer transposer;
+        [Header("Player")]
+        [SerializeField] private Transform playerTransform = null;
+        #endregion
+
+        #region Controls
         private Controls controls;
         private Controls Controls
         {
@@ -25,7 +31,12 @@ namespace Warborn.Characters.Player.PlayerModel.Movement
             }
 
         }
-        private CinemachineTransposer transposer;
+        [ClientCallback]
+        private void OnEnable() => Controls.Enable();
+
+        [ClientCallback]
+        private void OnDisable() => Controls.Disable();
+        #endregion
 
         public override void OnStartAuthority()
         {
@@ -35,25 +46,16 @@ namespace Warborn.Characters.Player.PlayerModel.Movement
             Controls.Player.Look.performed += ctx => Look(ctx.ReadValue<Vector2>());
         }
 
-        [ClientCallback]
-        private void OnEnable() => Controls.Enable();
-
-        [ClientCallback]
-        private void OnDisable() => Controls.Disable();
-
-
-        private void Look(Vector2 lookAxis)
+        private void Look(Vector2 _lookAxis)
         {
-            float deltaTime = Time.deltaTime;
-
             float followOffset = Mathf.Clamp(
-                transposer.m_FollowOffset.y - (lookAxis.y * cameraVelocity.y * deltaTime),
+                transposer.m_FollowOffset.y - (_lookAxis.y * cameraVelocity.y * Time.deltaTime),
                  maxFollowOffset.x,
                 maxFollowOffset.y);
 
             transposer.m_FollowOffset.y = followOffset;
 
-            playerTransform.Rotate(0f, lookAxis.x * cameraVelocity.x * deltaTime, 0f);
+            playerTransform.Rotate(0f, _lookAxis.x * cameraVelocity.x * Time.deltaTime, 0f);
         }
     }
 }

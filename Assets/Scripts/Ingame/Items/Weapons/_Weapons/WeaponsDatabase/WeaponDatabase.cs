@@ -1,15 +1,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using Warborn.Items.Weapons.Weapons.Core;
+using Warborn.Ingame.Items.Weapons.Weapons.Core;
 
-namespace Warborn.Items.Weapons.Weapons.WeaponsDatabase
+namespace Warborn.Ingame.Items.Weapons.Weapons.WeaponsDatabase
 {
     public class WeaponDatabase : MonoBehaviour
     {
         private static WeaponDatabase Instance;
-        [SerializeField] private string PathToWeaponDatas = "";
+        [SerializeField] private string PathToWeaponData = "";
         public List<Weapon> Weapons;
+
+        #region Initialization
         public void Start()
         {
             if (Instance == null) { Instance = this; }
@@ -22,7 +24,9 @@ namespace Warborn.Items.Weapons.Weapons.WeaponsDatabase
 
             AddNewWeapon(new LightningSword(), nameof(LightningSword));
         }
+        #endregion
 
+        #region Getters
         public static WeaponDatabase GetInstance()
         {
             return Instance;
@@ -34,11 +38,12 @@ namespace Warborn.Items.Weapons.Weapons.WeaponsDatabase
 
             return copies.Where(x => x.weaponData.Id == id).FirstOrDefault();
         }
+        #endregion
 
-        private void AddNewWeapon(Weapon weapon, string weaponName)
+        private void AddNewWeapon(Weapon _weapon, string _weaponName)
         {
-            weapon.weaponData = (WeaponData)Resources.Load(PathToWeaponDatas + weaponName);
-            Weapons.Add(weapon);
+            _weapon.weaponData = (WeaponData)Resources.Load(PathToWeaponData + _weaponName);
+            Weapons.Add(_weapon);
         }
     }
 }

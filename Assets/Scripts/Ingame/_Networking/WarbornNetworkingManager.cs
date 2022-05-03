@@ -1,14 +1,13 @@
 using Mirror;
 using UnityEngine;
-using Warborn.Networking.Player;
 
-namespace Warborn.Networking.Manager
+namespace Warborn.Ingame.Networking
 {
     public class WarbornNetworkingManager : NetworkManager
     {
         [SerializeField] private Transform playersParent = null;
 
-        public override void OnServerAddPlayer(NetworkConnection conn)
+        public override void OnServerAddPlayer(NetworkConnection _conn)
         {
             // Spawn Networking player prefab
             GameObject player = (GameObject)Instantiate(playerPrefab, GetStartPosition().position, Quaternion.identity, playersParent);
@@ -17,7 +16,7 @@ namespace Warborn.Networking.Manager
             // Name the player on the server
             player.name = "Player" + (numPlayers + 1);
             // Add player to the game
-            NetworkServer.AddPlayerForConnection(conn, player);
+            NetworkServer.AddPlayerForConnection(_conn, player);
         }
     }
 }

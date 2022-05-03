@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Warborn.Items.Weapons.Effects.Core
+namespace Warborn.Ingame.Items.Weapons.Effects.Core
 {
     [CreateAssetMenu(fileName = "EffectData", menuName = "Effects/New effect", order = 1)]
     public class EffectData : ScriptableObject

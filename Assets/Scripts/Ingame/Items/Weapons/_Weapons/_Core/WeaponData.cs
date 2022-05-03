@@ -1,7 +1,7 @@
 using UnityEngine;
-using Warborn.Items.Weapons.Abilities.Core;
+using Warborn.Ingame.Items.Weapons.Abilities.Core;
 
-namespace Warborn.Items.Weapons.Weapons.Core
+namespace Warborn.Ingame.Items.Weapons.Weapons.Core
 {
     [CreateAssetMenu(fileName = "WeaponData", menuName = "Weapons/New weapon", order = 1)]
     public class WeaponData : ScriptableObject
