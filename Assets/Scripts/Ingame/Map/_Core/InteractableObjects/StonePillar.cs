@@ -4,11 +4,8 @@ namespace Warborn.Ingame.Map.Core.InteractableObjects
 {
     public class StonePillar : InteractableObject
     {
-        void Start()
-        {
-            Name = "Stone Pillar";
-        }
         public GameObject StonePillarGO;
+
         public override void Interact(bool _value)
         {
             Runestone_Controller _runestoneCtr = StonePillarGO.GetComponent<Runestone_Controller>();
@@ -22,6 +19,11 @@ namespace Warborn.Ingame.Map.Core.InteractableObjects
             Runestone_Controller _runestoneCtr = StonePillarGO.GetComponent<Runestone_Controller>();
             isActive = !isActive;
             _runestoneCtr.ToggleRuneStone(isActive);
+        }
+
+        public override void Interact(GameObject _PlayerGUI)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

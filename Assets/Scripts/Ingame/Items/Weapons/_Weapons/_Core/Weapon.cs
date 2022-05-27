@@ -11,9 +11,15 @@ namespace Warborn.Ingame.Items.Weapons.Weapons.Core
         #region Class members
         public WeaponData weaponData;
         public Ability BasicAttack;
+        public Ability Ability1;
+        public Ability Ability2;
+        public Ability UltimateAbility;
+
         public GameObject LocalPlayer;
 
         private event Action onCooldownAbilities;
+
+        public event Action onAbilityFinished;
         #endregion
 
         #region Performing the ability of a weapon
@@ -45,6 +51,11 @@ namespace Warborn.Ingame.Items.Weapons.Weapons.Core
         private void OnAbilityCooldownEnded(Ability _ability)
         {
             onCooldownAbilities -= _ability.CalculateCooldown;
+        }
+
+        public void HandleOnAbilityFinished()
+        {
+            onAbilityFinished?.Invoke();
         }
         #endregion
 

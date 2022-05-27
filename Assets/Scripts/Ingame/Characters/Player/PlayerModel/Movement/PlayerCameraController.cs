@@ -2,6 +2,7 @@ using Cinemachine;
 using Mirror;
 using UnityEngine;
 using Warborn.Ingame.Characters.Player.PlayerModel.Inputs;
+using Warborn.Ingame.Settings;
 
 namespace Warborn.Ingame.Characters.Player.PlayerModel.Movement
 {
@@ -48,6 +49,7 @@ namespace Warborn.Ingame.Characters.Player.PlayerModel.Movement
 
         private void Look(Vector2 _lookAxis)
         {
+            if (!CursorSettings.IsCursorLocked()) { return; }
             float followOffset = Mathf.Clamp(
                 transposer.m_FollowOffset.y - (_lookAxis.y * cameraVelocity.y * Time.deltaTime),
                  maxFollowOffset.x,

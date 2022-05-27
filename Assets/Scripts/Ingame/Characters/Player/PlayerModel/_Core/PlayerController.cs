@@ -3,6 +3,7 @@ using UnityEngine;
 using Warborn.Ingame.Characters.Player.PlayerModel.Collisions;
 using Warborn.Ingame.Characters.Player.PlayerModel.Combat;
 using Warborn.Ingame.Characters.Player.PlayerModel.Movement;
+using Warborn.Ingame.Settings;
 using Warborn.Items.Weapons.Weapons.WeaponsDatabase;
 
 namespace Warborn.Ingame.Characters.Player.PlayerModel.Core
@@ -13,11 +14,12 @@ namespace Warborn.Ingame.Characters.Player.PlayerModel.Core
         #region Players's information
         [Header("Player's information")]
         [SyncVar(hook = nameof(SetName))] public string PlayerName;
+
+        [SyncVar]
+        public NetworkIdentity PlayerNetworkManager;
         #endregion
 
         #region References
-
-
         [Header("Player's input")]
         [SerializeField] private InputHandler inputHandler = null;
 
@@ -34,6 +36,7 @@ namespace Warborn.Ingame.Characters.Player.PlayerModel.Core
         public PlayerCollisionDetector PlayerCollisionDetector { get { return collisionDetector; } }
         public PlayerMover PlayerMover { get { return playerMover; } }
         public InputHandler InputHandler { get { return inputHandler; } }
+        public PlayerAbilities PlayerAbilities { get { return playerAbilities; } }
         #endregion
         #endregion
 
@@ -50,7 +53,6 @@ namespace Warborn.Ingame.Characters.Player.PlayerModel.Core
             playerAbilities.InitWeaponIfNull();
 
             if (!hasAuthority) { return; }
-            LockCursor();
             InitClientEvents();
             playerAbilities.EquipWeapon(WeaponInstances.LIGHTNING_SWORD);
         }
@@ -65,6 +67,7 @@ namespace Warborn.Ingame.Characters.Player.PlayerModel.Core
         void Update()
         {
             if (!isServer) { return; }
+            if (!CursorSettings.IsCursorLocked()) { return; }
             playerAbilities.UpdateWeaponsAbilities();
         }
         #endregion
@@ -74,11 +77,7 @@ namespace Warborn.Ingame.Characters.Player.PlayerModel.Core
         {
             return playerMover.TryMove();
         }
-        private static void LockCursor()
-        {
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
-        }
+
 
         #endregion
 

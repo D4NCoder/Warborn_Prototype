@@ -1,5 +1,6 @@
 using Mirror;
 using UnityEngine;
+using Warborn.Ingame.Settings;
 
 namespace Warborn.Ingame.Characters.Player.PlayerModel.Movement
 {
@@ -47,8 +48,11 @@ namespace Warborn.Ingame.Characters.Player.PlayerModel.Movement
 
         public bool TryMove()
         {
-            Vector3 _moveVector = transform.TransformDirection(new Vector3(playerMovementInput.x, 0f, playerMovementInput.y)) * movementSpeed;
-            playerBody.velocity = new Vector3(_moveVector.x, playerBody.velocity.y, _moveVector.z);
+            if (CursorSettings.IsCursorLocked())
+            {
+                Vector3 _moveVector = transform.TransformDirection(new Vector3(playerMovementInput.x, 0f, playerMovementInput.y)) * movementSpeed;
+                playerBody.velocity = new Vector3(_moveVector.x, playerBody.velocity.y, _moveVector.z);
+            }
 
             Vector2 _animatorVector = new Vector2(playerBody.velocity.normalized.z, playerBody.velocity.normalized.x);
             float _animatorSpeed = _animatorVector.magnitude;

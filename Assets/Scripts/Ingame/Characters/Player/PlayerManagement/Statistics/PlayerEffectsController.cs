@@ -18,6 +18,7 @@ namespace Warborn.Ingame.Characters.Player.PlayerManagement.Statistics
             {
                 _effect.PerformEffect(_playerToApply);
             }
+            effects = new List<Effect>();
         }
     }
 

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using Warborn.Ingame.Helpers;
 
 namespace Warborn.Ingame.Items.Weapons.Abilities.Core
 {
@@ -59,7 +60,6 @@ namespace Warborn.Ingame.Items.Weapons.Abilities.Core
             }
         }
         #endregion
-
 
     }
 }

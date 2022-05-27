@@ -23,6 +23,7 @@ namespace Warborn.Ingame.Items.Weapons.Effects.EffectsDatabase
             Effects = new List<Effect>();
 
             AddNewEffect(new LSElectrocute(), nameof(LSElectrocute));
+            AddNewEffect(new SOFBasicAttack(), nameof(SOFBasicAttack));
         }
         #endregion
 

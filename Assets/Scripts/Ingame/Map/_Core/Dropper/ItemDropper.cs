@@ -95,6 +95,7 @@ namespace Warborn.Ingame.Map.Core.Dropper
             }
             RpcDrop();
         }
+
         [ClientRpc]
         private void RpcDrop()
         {
@@ -110,6 +111,7 @@ namespace Warborn.Ingame.Map.Core.Dropper
             if (drop == null) { return; }
             dropGO = Instantiate(drop.Prefab, dropPlaceholder.position, Quaternion.identity, dropPlaceholder);
             dropGO.GetComponent<DropableItem>().onPickupItem += OnPickupItem;
+            dropGO.GetComponent<DropableItem>().ParentNetworkID = this.netIdentity;
 
             NetworkServer.Spawn(dropGO);
             RpcInstantiateDropGO(dropGO.GetComponent<NetworkIdentity>());

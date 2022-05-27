@@ -25,6 +25,7 @@ namespace Warborn.Ingame.Map.Forest
         #endregion
 
         #region Activate Pillar and Forest drops
+
         public void onForestPillarStateChanged(bool _oldValue, bool _newValue)
         {
             ForestPillar.GetComponent<InteractableObject>().Interact(_newValue);
@@ -33,6 +34,7 @@ namespace Warborn.Ingame.Map.Forest
             if (_newValue) { RequestResetLevel(); }
         }
 
+        [Client]
         private void ActivateDroppers(bool _value)
         {
             dropper1.ActivateDropper(_value);

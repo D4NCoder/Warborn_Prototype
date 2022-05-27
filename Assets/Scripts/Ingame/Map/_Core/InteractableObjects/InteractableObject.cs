@@ -8,6 +8,7 @@ namespace Warborn.Ingame.Map.Core
         public bool isActive;
         public abstract void Interact();
         public abstract void Interact(bool _value);
+        public abstract void Interact(GameObject _PlayerGUI);
     }
 
 }

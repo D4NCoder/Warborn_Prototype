@@ -32,11 +32,11 @@ namespace Warborn.Ingame.Items.Weapons.Weapons.WeaponsDatabase
             return Instance;
         }
 
-        public Weapon GetWeaponById(int id)
+        public Weapon GetWeaponById(int _id)
         {
             List<Weapon> copies = Weapons.Select(x => (Weapon)x.Clone()).ToList();
 
-            return copies.Where(x => x.weaponData.Id == id).FirstOrDefault();
+            return copies.Where(x => x.weaponData.Id == _id).FirstOrDefault();
         }
         #endregion
 

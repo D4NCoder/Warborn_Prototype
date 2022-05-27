@@ -4,6 +4,8 @@ using System.Linq;
 using Warborn.Ingame.Items.Weapons.Weapons.Core;
 using Warborn.Ingame.Items.Weapons.Weapons.WeaponCollision;
 using Warborn.Ingame.Items.Weapons.Weapons.WeaponsDatabase;
+using System;
+using Warborn.Ingame.Characters.Player.PlayerModel.Collisions;
 
 namespace Warborn.Ingame.Characters.Player.PlayerModel.Combat
 {
@@ -19,7 +21,10 @@ namespace Warborn.Ingame.Characters.Player.PlayerModel.Combat
         [Header("Equiped weapon information")]
         [SerializeField] private Weapon EquipedWeapon;
         [SerializeField] private Transform weaponPlaceholder = null;
+
         [SerializeField] private WeaponInstanceInfo weaponInstanceInfo = null;
+        public WeaponInstanceInfo WeaponInstanceInfo => weaponInstanceInfo;
+
         #endregion
 
         #region Weapon information
@@ -29,6 +34,12 @@ namespace Warborn.Ingame.Characters.Player.PlayerModel.Combat
         [Header("Abilities information")]
         [SerializeField] private PlayerAbilityTypes lastAbilityUsed;
         #endregion
+
+        #endregion
+
+        #region Server Events
+
+        public event Action<WeaponInstanceInfo> onWeaponEquiped;
 
         #endregion
 
@@ -78,6 +89,7 @@ namespace Warborn.Ingame.Characters.Player.PlayerModel.Combat
 
             if ((_weaponPrefab = InitializeWeapon()) == null) { return; }
             weaponInstanceInfo = _weaponPrefab.GetComponent<WeaponInstanceInfo>();
+            onWeaponEquiped?.Invoke(weaponInstanceInfo);
 
             RpcEquipWeaponById(connectionToClient);
         }
@@ -93,6 +105,7 @@ namespace Warborn.Ingame.Characters.Player.PlayerModel.Combat
         {
             // Move this code upon the 
             EquipedWeapon.PerformAbility(_type);
+            CmdSetWaitingTimeForWeaponTrigger();
         }
         #endregion
 
@@ -116,7 +129,17 @@ namespace Warborn.Ingame.Characters.Player.PlayerModel.Combat
             var _data = EquipedWeapon.GetPressedAbilityData(_type);
             weaponInstanceInfo.EffectsToApplyToPlayer = _data.EffectsToApply.Select(x => x.Id).ToList();
 
+            weaponInstanceInfo.HasPlayerAttacked = true;
+            weaponInstanceInfo.ChangeWeaponToTriggerable();
+
             RpcPerformAbility(_type);
+        }
+
+        [Command]
+        public void CmdSetWaitingTimeForWeaponTrigger()
+        {
+            if (!hasAuthority) { return; }
+            weaponInstanceInfo.WaitTimeForResetCounter = this.gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length;
         }
         #endregion
         #endregion
@@ -128,6 +151,13 @@ namespace Warborn.Ingame.Characters.Player.PlayerModel.Combat
             lastAbilityUsed = _abilityType;
             CmdPerformAbility(_abilityType);
         }
+
+        [Server]
+        public void OnAttackDamageChange(int _attackDamage)
+        {
+            weaponInstanceInfo.BasicDamage = _attackDamage;
+        }
+
         #endregion
     }
 }

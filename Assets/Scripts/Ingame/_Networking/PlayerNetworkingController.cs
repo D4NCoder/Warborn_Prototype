@@ -9,7 +9,10 @@ using Warborn.Ingame.Characters.Player.PlayerModel.Core;
 using Warborn.Ingame.Helpers;
 using Warborn.Ingame.Items.Weapons.Effects.Core;
 using Warborn.Ingame.Items.Weapons.Effects.EffectsDatabase;
+using Warborn.Ingame.Items.Weapons.Weapons.WeaponCollision;
 using Warborn.Ingame.Map.Core;
+using Warborn.Ingame.Map.Core.DamagableObjects;
+using Warborn.Ingame.Settings;
 
 namespace Warborn.Ingame.Networking
 {
@@ -24,6 +27,7 @@ namespace Warborn.Ingame.Networking
         [SerializeField] private PlayerEffectsController playerEffectsController = null;
         [SerializeField] private PlayerStatsController playerStatsController = null;
         [SerializeField] private TeamNetworkingControlller teamNetworkingControlller = null;
+        [SerializeField] private EntityTeamType belongingTeam;
         #endregion
 
         #region References
@@ -42,6 +46,7 @@ namespace Warborn.Ingame.Networking
 
         #region Getters
         public PlayerEffectsController GetEffectsController { get { return playerEffectsController; } }
+        public EntityTeamType BelongingTeam { get { return belongingTeam; } }
         #endregion
         #endregion
 
@@ -51,8 +56,13 @@ namespace Warborn.Ingame.Networking
             if (!isLocalPlayer) { return; }
             if (isClient)
             {
+                CursorSettings.LockCursor();
                 CmdInitializePlayerModel();
                 onPlayerModelInitialized += InitClientEvents;
+            }
+            if (isServer)
+            {
+                playerStatsController.InitBasicStats(7f, 10, 10, 200);
             }
         }
 
@@ -69,7 +79,6 @@ namespace Warborn.Ingame.Networking
             InitializePlayer();
             InitServerEvents();
             // TODO: Change stats based on a class that player chooses
-            playerStatsController.InitBasicStats(7f, 10, 10, 200);
         }
         #endregion
 
@@ -84,6 +93,10 @@ namespace Warborn.Ingame.Networking
             playerInformation.PlayerName = "Player" + NetworkServer.connections.Count;
 
             PlayerModel = GameObject.Instantiate(PlayerPrefab, SpawnPosition, Quaternion.identity, PlayerModelParent);
+            PlayerController _playerController = PlayerModel.GetComponent<PlayerController>();
+            _playerController.PlayerName = playerInformation.PlayerName;
+            _playerController.PlayerNetworkManager = this.gameObject.GetComponent<NetworkIdentity>();
+
             PlayerModel.GetComponent<PlayerController>().PlayerName = playerInformation.PlayerName;
             NetworkServer.Spawn(PlayerModel, connectionToClient);
         }
@@ -108,30 +121,38 @@ namespace Warborn.Ingame.Networking
         [Server]
         private void InitServerEvents()
         {
-            PlayerModel.GetComponent<PlayerController>().PlayerCollisionDetector.onHitByWeapon += HandleHitByWeapon;
-            PlayerModel.GetComponent<PlayerController>().PlayerCollisionDetector.onInteraction += HandleOnInteractionCollision;
+            PlayerController playerController = PlayerModel.GetComponent<PlayerController>();
+
+            playerController.PlayerCollisionDetector.onHitByWeapon += HandleHitByWeapon;
+            playerController.PlayerCollisionDetector.onInteraction += HandleOnInteractionCollision;
+
+            playerController.PlayerAbilities.onWeaponEquiped += HandleEquipedWeapon;
+
+
+            // GUI
+            playerController.PlayerCollisionDetector.onDamagableInteraction += HandleOnDamagableCollisionGUI;
+            playerController.PlayerCollisionDetector.onDamagableLeave += HandleOnDamagableLeaveGUI;
+
+            // Stats
+            playerStatsController.onAttackDamageChange += playerController.PlayerAbilities.OnAttackDamageChange;
         }
 
         [Client]
         private void InitClientEvents()
         {
+            // Stats
             playerStatsController.onMovementSpeedChanged += PlayerModel.GetComponent<PlayerController>().PlayerMover.OnMovementSpeedChange;
-            InitInputEvents();
+
+            // Input
+            PlayerModel.GetComponent<PlayerController>().InputHandler.onInteract += HandlePlayersInteraction;
+            playerGUI.GetComponent<GUIStatsController>().FountainOfUndyingGUI.onSpawnArmy += teamNetworkingControlller.HandleOnSpawnArmyRequest;
         }
 
         [Client]
         private void InitGUIChangeEvents()
         {
             playerStatsController.onCurrentHealthChange += playerGUI.GetComponent<GUIStatsController>().OnCurrentHealthChange;
-
         }
-
-        private void InitInputEvents()
-        {
-            PlayerModel.GetComponent<PlayerController>().InputHandler.onInteract += HandlePlayersInteraction;
-        }
-
-
         #endregion
 
         #region Handlers
@@ -149,6 +170,14 @@ namespace Warborn.Ingame.Networking
         }
         #endregion
 
+        #region Weapon Equiped
+        [Server]
+        private void HandleEquipedWeapon(WeaponInstanceInfo _instanceInfo)
+        {
+            _instanceInfo.BelongingTeam = BelongingTeam;
+        }
+        #endregion
+
         #region Interaction with interactable objects
         #region Client
         [Client]
@@ -163,7 +192,14 @@ namespace Warborn.Ingame.Networking
         {
             _interactableObject.GetComponent<InteractableObject>().Interact(_value);
         }
+
+        [TargetRpc]
+        public void RpcHandlePlayerInteractionWithGUI(NetworkConnection _connection, NetworkIdentity _interactableObject)
+        {
+            _interactableObject.GetComponent<InteractableObject>().Interact(playerGUI);
+        }
         #endregion
+
         #region Server
         [Server]
         private void HandleOnInteractionCollision(NetworkIdentity _interactableObject, bool _value)
@@ -194,11 +230,22 @@ namespace Warborn.Ingame.Networking
         {
             if (playerInformation.InteractingObject == null) { return; }
             HideInteractionText(connectionToClient);
-            if (playerInformation.InteractingObject == teamNetworkingControlller.ForestManager.ForestPillar)
+
+            if (playerInformation.InteractingObject == teamNetworkingControlller.NormalForestManager.ForestPillar)
             {
-                teamNetworkingControlller.ForestManager.IsForestPillarActive = !teamNetworkingControlller.ForestManager.IsForestPillarActive;
+                teamNetworkingControlller.NormalForestManager.IsForestPillarActive = !teamNetworkingControlller.NormalForestManager.IsForestPillarActive;
+                RpcHandlePlayerInteraction(playerInformation.InteractingObject, teamNetworkingControlller.NormalForestManager.IsForestPillarActive);
             }
-            RpcHandlePlayerInteraction(playerInformation.InteractingObject, teamNetworkingControlller.ForestManager.IsForestPillarActive);
+            if (playerInformation.InteractingObject == teamNetworkingControlller.DarkForestManager.ForestPillar)
+            {
+                teamNetworkingControlller.DarkForestManager.IsForestPillarActive = !teamNetworkingControlller.DarkForestManager.IsForestPillarActive;
+                RpcHandlePlayerInteraction(playerInformation.InteractingObject, teamNetworkingControlller.DarkForestManager.IsForestPillarActive);
+            }
+            if (playerInformation.InteractingObject == teamNetworkingControlller.FountainOfUndying)
+            {
+                RpcHandlePlayerInteractionWithGUI(connectionToClient, playerInformation.InteractingObject);
+            }
+
         }
         #endregion
         #endregion
@@ -218,18 +265,49 @@ namespace Warborn.Ingame.Networking
         }
         #endregion
 
+        #region Interaction with Damagables
+
+        [Server]
+        public void HandleOnDamagableCollisionGUI(NetworkIdentity _identity, EntityTeamType _team, int _maxHealth, int _currentHealth, string _name)
+        {
+            bool _enemyDamagable = true;
+            if (belongingTeam == _team) { _enemyDamagable = false; }
+
+            _identity.GetComponent<DamagableObject>().onHealthChange += HandleChangeOfDamagableHealth;
+
+            RpcShowDamagableGUI(connectionToClient, _enemyDamagable, _maxHealth, _currentHealth, _name);
+        }
+        [Server]
+        public void HandleOnDamagableLeaveGUI()
+        {
+            HideDamagableGUI(connectionToClient);
+        }
+
+        [Server]
+        public void HandleChangeOfDamagableHealth(int _newHealth)
+        {
+            UpdateDamagableGUI(connectionToClient, _newHealth);
+        }
+
+        [TargetRpc]
+        public void RpcShowDamagableGUI(NetworkConnection _connection, bool _enemy, int _maxHealth, int _currentHealth, string _name)
+        {
+            playerGUI.GetComponent<GUIStatsController>().ShowDamagableGUI(_enemy, _maxHealth, _currentHealth, _name);
+        }
+
+        [TargetRpc]
+        public void UpdateDamagableGUI(NetworkConnection _connection, int _newHealth)
+        {
+            playerGUI.GetComponent<GUIStatsController>().UpdateHealthOfStatue(_newHealth);
+        }
+
+        [TargetRpc]
+        public void HideDamagableGUI(NetworkConnection _connection)
+        {
+            playerGUI.GetComponent<GUIStatsController>().HideDamagableGUI();
+        }
         #endregion
-
-
-
-
-
-
-
-
-
-
-
+        #endregion
 
     }
 }
