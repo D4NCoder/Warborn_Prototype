@@ -113,6 +113,7 @@ namespace Warborn.Ingame.Networking
         public void RpcInitializePlayerModel(NetworkIdentity _player)
         {
             PlayerModel = _player.gameObject;
+            teamNetworkingControlller = GameObject.FindWithTag(TagsReferences.TEAM1_MANAGER).GetComponent<TeamNetworkingControlller>();
             onPlayerModelInitialized?.Invoke();
         }
         #endregion
@@ -140,6 +141,7 @@ namespace Warborn.Ingame.Networking
         [Client]
         private void InitClientEvents()
         {
+
             // Stats
             playerStatsController.onMovementSpeedChanged += PlayerModel.GetComponent<PlayerController>().PlayerMover.OnMovementSpeedChange;
 
@@ -198,6 +200,7 @@ namespace Warborn.Ingame.Networking
         {
             _interactableObject.GetComponent<InteractableObject>().Interact(playerGUI);
         }
+
         #endregion
 
         #region Server

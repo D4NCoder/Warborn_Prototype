@@ -20,4 +20,4 @@ MonoBehaviour:
   - LightningSword_BA
   EffectsToApply:
   - {fileID: 11400000, guid: 7811a334d9936bd4d83beee51407999d, type: 2}
-  BasicCooldown: 0.8
+  BasicCooldown: 0.5
